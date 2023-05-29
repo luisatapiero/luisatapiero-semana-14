@@ -1,0 +1,16 @@
+$purple-font: purple;
+.section-comp {
+    min-height: 300px;
+    background-color: lightgray;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    h1 {
+        color: $purple-font;
+    }
+    &__subtitle {
+        color: blue;
+    }
+}
