@@ -1,8 +1,9 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getFirestore, collection, getDocs, addDoc, doc, setDoc, updateDoc, deleteDoc } from "firebase/firestore";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "firebase/auth";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { userValidation } from './userValidation.js'
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -106,7 +107,7 @@ export async function createUser(userInfo) {
       birthday: userInfo.birthday,
       username: userInfo.username
     }
-    addUserToDb(dbInfo, user.uid)
+    await addUserToDb(dbInfo, user.uid)
   }
   catch (error) {
     const errorCode = error.code;
@@ -127,4 +128,33 @@ export async function uploadFile(name, file, folder) {
   }
 }
 
+export async function logInUser(email, password) {
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, email, password)
+    const user = userCredential.user;
+    return { status: true, info: user.uid };
+  } catch (error) {
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    return { status: false, info: errorMessage };
+  }
+}
 
+export async function logOut() {
+
+  try {
+    await signOut(auth)
+  } catch (error) {
+    console.error(error)
+  };
+}
+
+onAuthStateChanged(auth, (user) => {
+  console.log('hubo un cambio en auth')
+  if (user) {
+      // const uid = user.uid;
+     userValidation(true, user.email)
+  } else {
+     userValidation(false)
+  }
+});
