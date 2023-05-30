@@ -1,4 +1,4 @@
-export function userValidation(userIsSignedIn, email = '') {
+export function userValidation(userIsSignedIn, username = '') {
 
     const path = window.location.pathname
 
@@ -22,7 +22,7 @@ export function userValidation(userIsSignedIn, email = '') {
         //console.log(header)
         if(header){
             header.setAttribute('logged', true)
-            header.setAttribute('email', email)
+            header.setAttribute('username', username)
         }
     }
 }

@@ -17,7 +17,7 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+export const auth = getAuth(app);
 
 // Initialize Cloud Firestore and get a reference to the service
 const db = getFirestore(app);
@@ -38,6 +38,13 @@ export async function getTasks() {
 
 export async function addTask(taskTitle) {
   try {
+    // Verificar el estado de inicio de sesión del usuario
+    const user = auth.currentUser;
+    if (!user) {
+      alert('Debes iniciar sesión para agregar una tarea.');
+      return;
+    }
+
     const docRef = await addDoc(collection(db, "tasks"), {
       title: taskTitle,
     });
@@ -45,7 +52,6 @@ export async function addTask(taskTitle) {
   } catch (e) {
     console.error("Error adding document: ", e);
   }
-
 }
 
 export async function addUserToDb(userInfo, id) {
@@ -62,6 +68,12 @@ export async function addUserToDb(userInfo, id) {
 export async function editDocument(title, id, completed) {
   const docRef = doc(db, "tasks", id);
 
+  const user = auth.currentUser;
+    if (!user) {
+      alert('Debes iniciar sesión para completar una tarea.');
+      return;
+    }
+
   try {
     await updateDoc(docRef, {
       title: title,
@@ -77,9 +89,15 @@ export async function editDocument(title, id, completed) {
 
 
 export async function deleteDocument(id) {
-  const docRef = doc(db, "tasks", id);
-
   try {
+    // Verificar el estado de inicio de sesión del usuario
+    const user = auth.currentUser;
+    if (!user) {
+      alert('Debes iniciar sesión para eliminar una tarea.');
+      return;
+    }
+
+    const docRef = doc(db, "tasks", id);
     await deleteDoc(docRef);
     console.log("Document deleted successfully");
   } catch (e) {
@@ -128,7 +146,7 @@ export async function uploadFile(name, file, folder) {
   }
 }
 
-export async function logInUser(email, password) {
+/*/export async function logInUser(email, password) {
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password)
     const user = userCredential.user;
@@ -138,7 +156,7 @@ export async function logInUser(email, password) {
     const errorMessage = error.message;
     return { status: false, info: errorMessage };
   }
-}
+}*/
 
 export async function logOut() {
 
@@ -150,10 +168,10 @@ export async function logOut() {
 }
 
 onAuthStateChanged(auth, (user) => {
-  console.log('hubo un cambio en auth')
+  //console.log('hubo un cambio en auth')
   if (user) {
       // const uid = user.uid;
-     userValidation(true, user.email)
+     userValidation(true, user.username)
   } else {
      userValidation(false)
   }

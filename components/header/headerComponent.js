@@ -15,7 +15,7 @@ class HeaderComponent extends HTMLElement {
     // this is how you declare which props are you interested in
     // Nota: no usar 'title' como atributo pues genera problemas al ser una palabra reservada
     static get observedAttributes() {
-        return ['email', 'logged'];
+        return ['username', 'logged'];
     }
 
     // this is called when any of the observedAttributes changes
@@ -29,9 +29,13 @@ class HeaderComponent extends HTMLElement {
     render() {
         this.innerHTML = `
             <header class="header-comp">
-                <h2>Mi Tienda</h2>
-                <h2>${this.logged?'usuario loggeado como: '+this.email: 'No Estas Loggeado'} </h2>
+                <div>     
+                <h2>${this.logged?'Hola, '+this.username: 'No estás logueado'} </h2>
+                <p>${this.logged?'Agrega tus tareas': 'No puedes agregar o eliminar tareas'} </p>
+                </div> 
                 <button>${this.logged? 'Cerrar Sesion' : 'Iniciar Sesion'}</button>
+                
+                
             </header>
           `;
 
@@ -44,7 +48,7 @@ class HeaderComponent extends HTMLElement {
     handleButton() {
         console.log('click en el boton')
         if(!this.logged){
-            window.location.replace('/log-in/')
+            window.location.replace('/login/')
         } else {
             logOut()
         }

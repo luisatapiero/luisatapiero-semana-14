@@ -23,6 +23,7 @@ function signUp(e){
         console.log(userInfo)
         if (userInfo.pass === userInfo.confirm){
             createUser(userInfo)
+            
         }else{
             alert('Las contraseñas no coinciden')
         }
